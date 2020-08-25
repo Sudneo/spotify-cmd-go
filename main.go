@@ -38,7 +38,6 @@ func main() {
 	obj := conn.Object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
 	currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "Failed to get property:", err)
 		os.Exit(1)
 	}
 	status := currentStatus.String()
