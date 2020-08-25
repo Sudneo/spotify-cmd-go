@@ -1,5 +1,5 @@
 # polybar-spotify-go
-Small script to get Spotify control to work with Polybar
+Small script to get Spotify control to work with Polybar. This is almost identical to [the Python version](https://github.com/Sudneo/polybar-spotify), rewritten in GO and without the necessity of getting the song title every second.
 
 ## Spotify Control and Polybar
 
