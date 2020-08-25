@@ -27,7 +27,7 @@ func main() {
 	var nextIcon = flag.Bool("nextIcon", false, "Print the next icon")
 	var prev = flag.Bool("prev", false, "Go to previous song")
 	var prevIcon = flag.Bool("prevIcon", false, "Print the prev icon")
-	var justify = flag.Int("justify", 50, "Justifies the output to the specified number of characters, padding or trimming")
+	var justify = flag.Int("justify", 75, "Justifies the output to the specified number of characters, padding or trimming")
 	flag.Parse()
 	conn, err := dbus.SessionBus()
 	if err != nil {
@@ -71,14 +71,41 @@ func main() {
 			}
 			os.Exit(0)
 		}
+		// Here we are subscribing to dbus signal and printing the new songs as they come
 		metadata, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
-		values := metadata.Value()
-		title := values.(map[string]dbus.Variant)["xesam:title"]
-		artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
-		album := values.(map[string]dbus.Variant)["xesam:album"]
-		dash := "\u2014"
-		status_icon := "\uf1bc"
-		status_string := fmt.Sprintf("%s %s %s %s (%s)", status_icon, title, dash, artist, album)
-		fmt.Println(trim_or_pad(status_string, *justify))
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			values := metadata.Value()
+			title := values.(map[string]dbus.Variant)["xesam:title"]
+			artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
+			album := values.(map[string]dbus.Variant)["xesam:album"]
+			dash := "\u2014"
+			status_icon := "\uf1bc"
+			status_string := fmt.Sprintf("%s %s %s %s (%s)", status_icon, title, dash, artist, album)
+			fmt.Println(trim_or_pad(status_string, *justify))
+		}
+		if err = conn.AddMatchSignal(
+			dbus.WithMatchObjectPath("/org/mpris/MediaPlayer2"),
+		); err != nil {
+			panic(err)
+		}
+		c := make(chan *dbus.Signal, 10)
+		conn.Signal(c)
+		for _ = range c {
+			metadata, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
+			if err != nil {
+				fmt.Println(err)
+			} else {
+				values := metadata.Value()
+				title := values.(map[string]dbus.Variant)["xesam:title"]
+				artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
+				album := values.(map[string]dbus.Variant)["xesam:album"]
+				dash := "\u2014"
+				status_icon := "\uf1bc"
+				status_string := fmt.Sprintf("%s %s %s %s (%s)", status_icon, title, dash, artist, album)
+				fmt.Println(trim_or_pad(status_string, *justify))
+			}
+		}
 	}
 }
