@@ -50,7 +50,7 @@ format-padding = -1
 type = custom/script
 exec = ~/polybar-scripts/polybar-spotify-go -playpause-icon
 click-left = ~/polybar-scripts/polybar-spotify-go -playpause
-interval = 0.5
+tail = true
 format-padding = -1
 
 [module/spotify-forward]

@@ -52,6 +52,42 @@ func main() {
 	case *playPause:
 		obj.Call("org.mpris.MediaPlayer2.Player.PlayPause", 0)
 		os.Exit(0)
+	case *playPauseIcon:
+		currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Failed to get property:", err)
+			os.Exit(1)
+		}
+		status := currentStatus.String()
+		if status != "\"Playing\"" && status != "\"Paused\"" && status != "\"Stopped\"" {
+			fmt.Println("Spotify is not running")
+			os.Exit(0)
+		}
+		if status != "\"Playing\"" {
+			fmt.Printf("\uf04b\n")
+		} else {
+			fmt.Printf("\uf04c\n")
+		}
+		if err = conn.AddMatchSignal(
+			dbus.WithMatchObjectPath("/org/mpris/MediaPlayer2"),
+		); err != nil {
+			panic(err)
+		}
+		c := make(chan *dbus.Signal, 10)
+		conn.Signal(c)
+		for _ = range c {
+			currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "Failed to get property:", err)
+				os.Exit(1)
+			}
+			status := currentStatus.String()
+			if status != "\"Playing\"" {
+				fmt.Printf("\uf04b\n")
+			} else {
+				fmt.Printf("\uf04c\n")
+			}
+		}
 	default:
 		currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
 		if err != nil {
@@ -63,15 +99,6 @@ func main() {
 			fmt.Println("Spotify is not running")
 			os.Exit(0)
 		}
-		if *playPauseIcon {
-			if status != "\"Playing\"" {
-				fmt.Printf("\uf04b\n")
-			} else {
-				fmt.Printf("\uf04c\n")
-			}
-			os.Exit(0)
-		}
-		// Here we are subscribing to dbus signal and printing the new songs as they come
 		metadata, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
 		if err != nil {
 			fmt.Println(err)
