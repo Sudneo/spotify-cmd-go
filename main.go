@@ -36,6 +36,15 @@ func main() {
 	}
 	defer conn.Close()
 	obj := conn.Object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
+	currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "Failed to get property:", err)
+		os.Exit(1)
+	}
+	status := currentStatus.String()
+	if status != "\"Playing\"" && status != "\"Paused\"" && status != "\"Stopped\"" {
+		os.Exit(0)
+	}
 	switch {
 	case *next:
 		obj.Call("org.mpris.MediaPlayer2.Player.Next", 0)
@@ -53,16 +62,6 @@ func main() {
 		obj.Call("org.mpris.MediaPlayer2.Player.PlayPause", 0)
 		os.Exit(0)
 	case *playPauseIcon:
-		currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "Failed to get property:", err)
-			os.Exit(1)
-		}
-		status := currentStatus.String()
-		if status != "\"Playing\"" && status != "\"Paused\"" && status != "\"Stopped\"" {
-			fmt.Println("Spotify is not running")
-			os.Exit(0)
-		}
 		if status != "\"Playing\"" {
 			fmt.Printf("\uf04b\n")
 		} else {
@@ -89,16 +88,6 @@ func main() {
 			}
 		}
 	default:
-		currentStatus, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.PlaybackStatus")
-		if err != nil {
-			fmt.Fprintln(os.Stderr, "Failed to get property:", err)
-			os.Exit(1)
-		}
-		status := currentStatus.String()
-		if status != "\"Playing\"" && status != "\"Paused\"" && status != "\"Stopped\"" {
-			fmt.Println("Spotify is not running")
-			os.Exit(0)
-		}
 		metadata, err := obj.GetProperty("org.mpris.MediaPlayer2.Player.Metadata")
 		if err != nil {
 			fmt.Println(err)
