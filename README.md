@@ -7,14 +7,17 @@ Compared to the Python version this is 4-6 times faster and also uses Dbus signa
 
 In order to have this to work you need to simply download a release or build it in your machine.
 
+```bash
+wget https://github.com/Sudneo/spotify-cmd-go/releases/download/${RELEASE}/polybar-spotify-go -O ~/polybar-scripts/polybar-spotify-go
+```
+
 ## Idea
 
 The idea is to have a simple way to see Spotify music playing and simple controls to pause/play songs and to go to previous/next song.
 
 ## Limitations
 
-The main limitation is that Spotify application doesn't expose the current position in the song,
-so we cannot show a fancy progress bar of the song.
+The main limitation is that Spotify application doesn't expose the current position in the song, so we cannot show a fancy progress bar of the song.
 It could be possible to use a timer and signals to check when a new song started, but without information about changing the position in the song it would have several issues.
 
 ## Configuration
@@ -24,7 +27,8 @@ I deliberately wrote a script that could do all I needed and then split the func
 The result was something like the following:
 ```
 [...]
-
+font-3 = "Inconsolata:size=8;0"
+[...]
 modules-left = spotify-song spotify-backward spotify-status spotify-forward
 
 [...]
@@ -72,11 +76,9 @@ format-padding = 4
 
 Few things to notice:
 
-* The custom font usage in the `spotify-song` block is not casual. Since the blocks are separated,
-  the best result is obtained with monospace fonts, so that the width of the block is fixed.
-* When Spotify is not Running, the script doesn't print anything at all, so the whole block will
-  basically disappear.
-* Depending on Polybar polling time, the "next" and "previous" icons might take a while to come up when Spotify gets launched once Polybar is running.
+* The custom font usage in the `spotify-song` block is not casual. Since the blocks are separated, the best result is obtained with monospace fonts, so that the width of the block is fixed.
+* When Spotify is not Running, the script doesn't print anything at all, so the whole block will basically disappear.
+* Depending on Polybar polling time, the "next" and "previous" icons might take a while to come up if Spotify gets launched once Polybar is running (1 minute by default)
 
 ## Outcome
 
@@ -89,4 +91,9 @@ When a song is paused, the result is like this:
 ![Paused](paused.png)
 
 Note that the script trims or pads the output to a fixed amount of characters, that together with a monospace font produce the result of a fixed width polybar block.
+
+
+## Why in GO ##
+
+Previously I have used Python and I was not happy with performances, I noticed quite often the script running from process list. Moreover, having a simple binary already compiled that does not require any other dependency is extremely convenient in my opinion.
 
