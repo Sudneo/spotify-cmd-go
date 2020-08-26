@@ -30,7 +30,7 @@ modules-left = spotify-song spotify-backward spotify-status spotify-forward
 [...]
 [module/spotify-song]
 type = custom/script
-exec = ~/polybar-scripts/polybar-spotify-go
+exec = ~/polybar-scripts/polybar-spotify-go -album
 tail = true
 format = <label>
 format-foreground = #fff
