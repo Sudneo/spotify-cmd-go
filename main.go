@@ -9,16 +9,14 @@ import (
 )
 
 const (
-	next         = "\uf051"
-	prev         = "\uf048"
-	pause        = "\uf04b"
-	play         = "\uf04c"
-	dash         = "\u2014"
-	spotify_icon = "\uf1bc"
+	nextUnicode  = "\uf051"
+	prevUnicode  = "\uf048"
+	pauseUnicode = "\uf04b"
+	playUnicode  = "\uf04c"
+	dashUnicode  = "\u2014"
 )
 
 func trim_or_pad(s string, n int) string {
-	fmt.Printf("Printing string of %v chars to %v\n", len(s), n)
 	if len(s) > n {
 		return s[:n]
 	} else {
@@ -26,7 +24,6 @@ func trim_or_pad(s string, n int) string {
 		for i := 0; i < (n - len(s)); i++ {
 			pad = pad + " "
 		}
-		fmt.Printf("Length of padded: %v\n", len(s+pad))
 		return s + pad
 
 	}
@@ -61,22 +58,22 @@ func main() {
 		obj.Call("org.mpris.MediaPlayer2.Player.Next", 0)
 		os.Exit(0)
 	case *nextIcon:
-		fmt.Println(next)
+		fmt.Println(nextUnicode)
 		os.Exit(0)
 	case *prev:
 		obj.Call("org.mpris.MediaPlayer2.Player.Previous", 0)
 		os.Exit(0)
 	case *prevIcon:
-		fmt.Println(prev)
+		fmt.Println(prevUnicode)
 		os.Exit(0)
 	case *playPause:
 		obj.Call("org.mpris.MediaPlayer2.Player.PlayPause", 0)
 		os.Exit(0)
 	case *playPauseIcon:
 		if status != "\"Playing\"" {
-			fmt.Println(pause)
+			fmt.Println(pauseUnicode)
 		} else {
-			fmt.Println(play)
+			fmt.Println(playUnicode)
 		}
 		if err = conn.AddMatchSignal(
 			dbus.WithMatchObjectPath("/org/mpris/MediaPlayer2"),
@@ -93,9 +90,9 @@ func main() {
 			}
 			status := currentStatus.String()
 			if status != "\"Playing\"" {
-				fmt.Println(pause)
+				fmt.Println(pauseUnicode)
 			} else {
-				fmt.Println(play)
+				fmt.Println(playUnicode)
 			}
 		}
 	default:
@@ -108,7 +105,7 @@ func main() {
 		title := values.(map[string]dbus.Variant)["xesam:title"]
 		artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
 		album := values.(map[string]dbus.Variant)["xesam:album"]
-		status_string := fmt.Sprintf("%s %s %s %s (%s)", spotify_icon, title, dash, artist, album)
+		status_string := fmt.Sprintf("%s %s %s (%s)", title, dashUnicode, artist, album)
 		fmt.Println(trim_or_pad(status_string, *justify))
 		if err = conn.AddMatchSignal(
 			dbus.WithMatchObjectPath("/org/mpris/MediaPlayer2"),
@@ -127,7 +124,7 @@ func main() {
 			title := values.(map[string]dbus.Variant)["xesam:title"]
 			artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
 			album := values.(map[string]dbus.Variant)["xesam:album"]
-			status_string := fmt.Sprintf("%s %s %s %s (%s)", spotify_icon, title, dash, artist, album)
+			status_string := fmt.Sprintf("%s %s %s (%s)", title, dashUnicode, artist, album)
 			fmt.Println(trim_or_pad(status_string, *justify))
 		}
 	}
