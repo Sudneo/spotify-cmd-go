@@ -30,12 +30,11 @@ modules-left = spotify-song spotify-backward spotify-status spotify-forward
 [...]
 [module/spotify-song]
 type = custom/script
-exec = ~/polybar-scripts/polybar-spotify-go -album
+exec = ~/polybar-scripts/polybar-spotify-go -justify 55 -album
 tail = true
-format = <label>
-format-foreground = #fff
-format-background = #773f3f3f
-format-underline = #c9665e
+format = %{F#8a1a0b}%{F-} <label>
+format-background = ${colors.black}
+format-underline = ${colors.red}
 format-padding = 4
 label = %{T4}%output%%{T-}
 
@@ -44,21 +43,31 @@ type = custom/script
 exec = ~/polybar-scripts/polybar-spotify-go -prevIcon
 click-left = ~/polybar-scripts/polybar-spotify-go -prev
 interval = 60
-format-padding = -1
+format = <label>
+format-background = ${colors.black}
+format-underline = ${colors.red}
+format-padding = 4
 
 [module/spotify-status]
 type = custom/script
 exec = ~/polybar-scripts/polybar-spotify-go -playpause-icon
-click-left = ~/polybar-scripts/polybar-spotify-go -playpause
 tail = true
-format-padding = -1
+click-left = ~/polybar-scripts/polybar-spotify-go -playpause
+format = <label>
+format-background = ${colors.black}
+format-underline = ${colors.red}
+format-padding = 4
 
 [module/spotify-forward]
 type = custom/script
 exec = ~/polybar-scripts/polybar-spotify-go -nextIcon
 click-left = ~/polybar-scripts/polybar-spotify-go -next
 interval = 60
-format-padding = -1
+format = <label>
+format-background = ${colors.black}
+format-underline = ${colors.red}
+format-padding = 4
+
 ```
 
 Few things to notice:
