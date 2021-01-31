@@ -103,9 +103,15 @@ func main() {
 			os.Exit(1)
 		}
 		var status_string string
+		var artist string
 		values := metadata.Value()
 		title := values.(map[string]dbus.Variant)["xesam:title"]
-		artist := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
+		artist_data := values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)
+		if len(artist_data) > 0 {
+			artist = values.(map[string]dbus.Variant)["xesam:artist"].Value().([]string)[0]
+		} else {
+			os.Exit(1)
+		}
 		if *printAlbum {
 			album := values.(map[string]dbus.Variant)["xesam:album"]
 			status_string = fmt.Sprintf("%s %s %s (%s)", title, dashUnicode, artist, album)
